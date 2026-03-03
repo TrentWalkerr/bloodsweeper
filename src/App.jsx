@@ -361,9 +361,16 @@ export default function VampireMinesweeper() {
     return `${m}:${sec.toString().padStart(2, "0")}`;
   };
 
-  const cellSize = isMobile
-    ? cols > 12 ? 24 : cols > 8 ? 30 : 36
-    : cols > 12 ? 28 : cols > 8 ? 32 : 38;
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const maxBoardWidth = Math.min(windowWidth - 32, 600);
+  const cellSize = Math.floor((maxBoardWidth - (cols - 1) * 2 - 16) / cols);
 
   return (
     <div
